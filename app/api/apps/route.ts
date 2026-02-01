@@ -6,6 +6,34 @@ const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 )
 
+// Rate limiting: 2 apps per day per IP
+const submitLimits = new Map<string, { count: number; resetTime: number }>()
+const DAILY_LIMIT = 2
+const DAY_MS = 24 * 60 * 60 * 1000
+
+function checkRateLimit(ip: string): { allowed: boolean; remaining: number } {
+  const now = Date.now()
+  const record = submitLimits.get(ip)
+  
+  if (!record || now > record.resetTime) {
+    submitLimits.set(ip, { count: 0, resetTime: now + DAY_MS })
+    return { allowed: true, remaining: DAILY_LIMIT }
+  }
+  
+  if (record.count >= DAILY_LIMIT) {
+    return { allowed: false, remaining: 0 }
+  }
+  
+  return { allowed: true, remaining: DAILY_LIMIT - record.count }
+}
+
+function incrementRateLimit(ip: string) {
+  const record = submitLimits.get(ip)
+  if (record) {
+    record.count++
+  }
+}
+
 // Screenshot service for auto-preview
 const SCREENSHOT_API = 'https://api.screenshotmachine.com'
 const SCREENSHOT_KEY = process.env.SCREENSHOT_API_KEY // Optional
@@ -56,6 +84,21 @@ export async function GET(request: NextRequest) {
 // POST /api/apps - Submit a new app (agent-friendly)
 export async function POST(request: NextRequest) {
   try {
+    // Rate limit check
+    const ip = request.headers.get('x-forwarded-for')?.split(',')[0] || 
+               request.headers.get('x-real-ip') || 
+               'unknown'
+    const rateCheck = checkRateLimit(ip)
+    
+    if (!rateCheck.allowed) {
+      return NextResponse.json({
+        error: 'Rate limit exceeded',
+        message: 'You can only submit 2 apps per day. Try again tomorrow.',
+        limit: DAILY_LIMIT,
+        remaining: 0
+      }, { status: 429 })
+    }
+
     const body = await request.json()
     
     const { 
@@ -127,10 +170,14 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: error.message }, { status: 500 })
     }
 
+    // Increment rate limit on success
+    incrementRateLimit(ip)
+
     return NextResponse.json({
       success: true,
       message: 'App submitted successfully',
       app: data,
+      remaining_submissions_today: rateCheck.remaining - 1,
       _links: {
         self: `/api/apps/${data.id}`,
         vote: `/api/apps/${data.id}/vote`
