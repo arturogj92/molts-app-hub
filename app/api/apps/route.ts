@@ -43,8 +43,8 @@ function generatePreviewUrl(url: string): string {
   if (SCREENSHOT_KEY) {
     return `${SCREENSHOT_API}?key=${SCREENSHOT_KEY}&url=${encodeURIComponent(url)}&dimension=1024x768`
   }
-  // Fallback: use a free service
-  return `https://image.thum.io/get/width/600/${encodeURIComponent(url)}`
+  // Fallback: use thum.io (no encoding needed)
+  return `https://image.thum.io/get/width/600/${url}`
 }
 
 // GET /api/apps - List all approved apps (agent-friendly)
