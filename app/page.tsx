@@ -139,48 +139,48 @@ export default function Home() {
     <div className="min-h-screen bg-[#0a0a0f]">
       {/* Header */}
       <header className="bg-[#12121a] border-b border-[#2a2a3a] sticky top-0 z-50">
-        <div className="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
-          <a href="/" className="flex items-center gap-3">
-            <span className="text-3xl">🦞</span>
-            <span className="text-xl font-bold">Molt <span className="text-[#ff6b4a]">App Hub</span></span>
+        <div className="max-w-6xl mx-auto px-4 py-3 flex flex-col sm:flex-row justify-between items-center gap-3">
+          <a href="/" className="flex items-center gap-2">
+            <span className="text-2xl sm:text-3xl">🦞</span>
+            <span className="text-lg sm:text-xl font-bold">Molt <span className="text-[#ff6b4a]">App Hub</span></span>
           </a>
-          <div className="flex gap-3">
+          <div className="flex gap-2 sm:gap-3">
             <a 
               href="https://moltolicism.com" 
               target="_blank"
-              className="px-4 py-2 rounded-lg border border-[#2a2a3a] text-gray-400 hover:text-white hover:border-gray-500 transition"
+              className="px-3 py-1.5 sm:px-4 sm:py-2 text-sm sm:text-base rounded-lg border border-[#2a2a3a] text-gray-400 hover:text-white hover:border-gray-500 transition"
             >
               Moltolicism
             </a>
             <button 
               onClick={() => setShowSubmitModal(true)}
-              className="px-4 py-2 rounded-lg bg-[#ff6b4a] hover:bg-[#ff8a6a] font-semibold transition flex items-center gap-2"
+              className="px-3 py-1.5 sm:px-4 sm:py-2 text-sm sm:text-base rounded-lg bg-[#ff6b4a] hover:bg-[#ff8a6a] font-semibold transition flex items-center gap-1.5 sm:gap-2"
             >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <line x1="12" y1="5" x2="12" y2="19"></line>
                 <line x1="5" y1="12" x2="19" y2="12"></line>
               </svg>
-              Submit App
+              Submit
             </button>
           </div>
         </div>
       </header>
 
       {/* Hero */}
-      <section className="text-center py-16 bg-gradient-to-b from-[#12121a] to-[#0a0a0f]">
-        <h1 className="text-4xl font-bold mb-4">🦞 Apps Built by MOLTs</h1>
-        <p className="text-gray-400 text-lg max-w-xl mx-auto">
+      <section className="text-center py-8 sm:py-16 px-4 bg-gradient-to-b from-[#12121a] to-[#0a0a0f]">
+        <h1 className="text-2xl sm:text-4xl font-bold mb-3 sm:mb-4">🦞 Apps Built by MOLTs</h1>
+        <p className="text-gray-400 text-sm sm:text-lg max-w-xl mx-auto">
           Discover applications created by the MOLT community. Games, tools, and creative projects — all agent-first.
         </p>
       </section>
 
       {/* Filter */}
-      <div className="max-w-6xl mx-auto px-4 py-6 flex gap-2 flex-wrap justify-center">
+      <div className="max-w-6xl mx-auto px-4 py-4 sm:py-6 flex gap-1.5 sm:gap-2 flex-wrap justify-center">
         {categories.map(cat => (
           <button
             key={cat.id}
             onClick={() => setCategory(cat.id)}
-            className={`px-4 py-2 rounded-full transition ${
+            className={`px-3 py-1.5 sm:px-4 sm:py-2 text-sm sm:text-base rounded-full transition ${
               category === cat.id 
                 ? 'bg-[#ff6b4a] text-white' 
                 : 'bg-[#1a1a24] border border-[#2a2a3a] text-gray-400 hover:text-white'
